@@ -140,6 +140,26 @@ class MatrixAIDesktopAssistant:
             self.init_customtkinter_gui()
         else:
             self.init_terminal_gui()
+
+    def init_customtkinter_gui(self):
+        """Basit CustomTkinter arayüzü (yedek)."""
+        import customtkinter as ctk
+
+        self.root = ctk.CTk()
+        self.root.title(f"{self.app_name} v{self.version}")
+
+        label = ctk.CTkLabel(self.root, text="Matrix AI Desktop Assistant")
+        label.pack(padx=10, pady=10)
+
+        start_btn = ctk.CTkButton(self.root, text="Başlat", command=self.start_matrix_ai)
+        start_btn.pack(padx=10, pady=10)
+
+        self.root.protocol("WM_DELETE_WINDOW", self.quit_application)
+
+    def init_terminal_gui(self):
+        """GUI bulunamazsa terminal moduna geç."""
+        self.app = None
+        print("GUI framework bulunamadı. Terminal moduna geçiliyor.")
     
     def init_pyside6_gui(self):
         """PySide6 tabanlı modern GUI"""
@@ -819,9 +839,9 @@ Başka bir şey yapmamı ister misiniz?
         
         if self.selenium_controller:
             self.selenium_controller.quit()
-        
+
         # GUI'yi kapat
-        if hasattr(self, 'app'):
+        if getattr(self, 'app', None):
             self.app.quit()
         
         sys.exit(0)
@@ -831,6 +851,8 @@ Başka bir şey yapmamı ister misiniz?
         if GUI_FRAMEWORK == "PySide6":
             self.main_window.show()
             return self.app.exec()
+        elif GUI_FRAMEWORK == "CustomTkinter":
+            return self.root.mainloop()
         else:
             # Terminal mode için basit input loop
             self.terminal_mode()

@@ -1,0 +1,7 @@
+selenium
+selenium-stealth
+helium
+customtkinter
+PySide6
+cryptography
+smolagents

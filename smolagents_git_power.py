@@ -21,6 +21,11 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 import logging
 
+try:
+    from smolagents_integration import SmolAgentsIntegration
+except Exception:  # pragma: no cover - optional
+    SmolAgentsIntegration = None
+
 class SmolAgentsGitPower:
     """
     SmolAgents Git Power - Akıllı Git Otomasyonu
@@ -189,33 +194,35 @@ class SmolAgentsGitPower:
             Oluşturulan commit mesajı
         """
         
+        diff_output = ""
         if not context:
-            # Git diff'den değişiklikleri analiz et
             try:
                 diff_output = subprocess.check_output(
-                    ["git", "diff", "--cached", "--name-status"],
+                    ["git", "diff", "--cached"],
                     text=True
                 ).strip()
-                
-                if diff_output:
-                    lines = diff_output.split('\n')
-                    added_files = [line[2:] for line in lines if line.startswith('A')]
-                    modified_files = [line[2:] for line in lines if line.startswith('M')]
-                    deleted_files = [line[2:] for line in lines if line.startswith('D')]
-                    
-                    # Commit mesajını akıllıca oluştur
-                    if added_files and not modified_files:
-                        context = f"Add {len(added_files)} new files"
-                    elif modified_files and not added_files:
-                        context = f"Update {len(modified_files)} files"
-                    elif added_files and modified_files:
-                        context = f"Add {len(added_files)} and update {len(modified_files)} files"
-                    elif deleted_files:
-                        context = f"Remove {len(deleted_files)} files"
-                    else:
-                        context = "Update project files"
-                
             except subprocess.CalledProcessError:
+                diff_output = ""
+
+        if SmolAgentsIntegration and os.getenv("USE_SMOLAGENTS", "false").lower() == "true" and diff_output:
+            try:
+                agent = SmolAgentsIntegration()
+                context = agent.generate_commit_message(diff_output)
+            except Exception as e:
+                self.logger.error(f"SmolAgents integration failed: {e}")
+
+        if not context:
+            if diff_output:
+                lines = diff_output.split('\n')
+                added_files = [l for l in lines if l.startswith('+') and not l.startswith('+++')]
+                removed_files = [l for l in lines if l.startswith('-') and not l.startswith('---')]
+                if added_files and not removed_files:
+                    context = f"Add {len(added_files)} lines"
+                elif removed_files and not added_files:
+                    context = f"Remove {len(removed_files)} lines"
+                else:
+                    context = "Update project files"
+            else:
                 context = "Update project"
         
         # Emoji'li ve semantik commit mesajı
