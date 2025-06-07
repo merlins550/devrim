@@ -40,6 +40,7 @@ except ImportError:
 # Import our custom modules
 from browser_agent_stealth import BrowserAgentStealth
 from matrix_ai_chatgpt_stealth_integration import MatrixAIChatGPTStealth
+from copilot_bridge import CopilotBridge
 
 class MatrixAIDesktopAssistant:
     """
@@ -140,6 +141,26 @@ class MatrixAIDesktopAssistant:
             self.init_customtkinter_gui()
         else:
             self.init_terminal_gui()
+
+    def init_customtkinter_gui(self):
+        """Basit CustomTkinter arayüzü (yedek)."""
+        import customtkinter as ctk
+
+        self.root = ctk.CTk()
+        self.root.title(f"{self.app_name} v{self.version}")
+
+        label = ctk.CTkLabel(self.root, text="Matrix AI Desktop Assistant")
+        label.pack(padx=10, pady=10)
+
+        start_btn = ctk.CTkButton(self.root, text="Başlat", command=self.start_matrix_ai)
+        start_btn.pack(padx=10, pady=10)
+
+        self.root.protocol("WM_DELETE_WINDOW", self.quit_application)
+
+    def init_terminal_gui(self):
+        """GUI bulunamazsa terminal moduna geç."""
+        self.app = None
+        print("GUI framework bulunamadı. Terminal moduna geçiliyor.")
     
     def init_pyside6_gui(self):
         """PySide6 tabanlı modern GUI"""
@@ -440,6 +461,14 @@ class MatrixAIDesktopAssistant:
             self.logger.info("SmolAgents Git Power hazır")
         except Exception as e:
             self.logger.error(f"SmolAgents Git Power hatası: {e}")
+
+        # Copilot Bridge
+        try:
+            workspace = self.config["vscode"]["workspace_path"]
+            self.copilot_bridge = CopilotBridge(workspace)
+            self.logger.info("Copilot Bridge hazır")
+        except Exception as e:
+            self.logger.error(f"Copilot Bridge hatası: {e}")
         
         # Intent Detection sistemi
         try:
@@ -741,7 +770,12 @@ Başka bir şey yapmamı ister misiniz?
     def handle_code_assistance(self, message: str):
         """Kod yardımı isteklerini işle"""
         self.add_chat_message("asistan", f"🤖 Kod yardımı: {message}")
-        # ChatGPT Codex entegrasyonu buraya gelecek
+        response = ""
+        if hasattr(self, "copilot_bridge"):
+            response = self.copilot_bridge.ask(message)
+        if not response:
+            response = "Yanıt alınamadı."
+        self.add_chat_message("asistan", response)
     
     def handle_system_control(self, message: str):
         """Sistem kontrol komutlarını işle"""
@@ -819,9 +853,9 @@ Başka bir şey yapmamı ister misiniz?
         
         if self.selenium_controller:
             self.selenium_controller.quit()
-        
+
         # GUI'yi kapat
-        if hasattr(self, 'app'):
+        if getattr(self, 'app', None):
             self.app.quit()
         
         sys.exit(0)
@@ -831,6 +865,8 @@ Başka bir şey yapmamı ister misiniz?
         if GUI_FRAMEWORK == "PySide6":
             self.main_window.show()
             return self.app.exec()
+        elif GUI_FRAMEWORK == "CustomTkinter":
+            return self.root.mainloop()
         else:
             # Terminal mode için basit input loop
             self.terminal_mode()
