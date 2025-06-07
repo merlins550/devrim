@@ -5,3 +5,4 @@ customtkinter
 PySide6
 cryptography
 smolagents
+requests
