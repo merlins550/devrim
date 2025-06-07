@@ -1,8 +1,8 @@
 import helium
 import time
 import random
-import pickle
 import os
+from cookie_manager import CookieManager
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -21,6 +21,12 @@ except ImportError:
 
 class BrowserAgentStealth:
     """Google Stealth teknolojileri ile güçlendirilmiş Browser Agent"""
+
+    USER_AGENTS = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0 Safari/537.36",
+    ]
     
     def __init__(self):
         self.driver: WebDriver | None = None
@@ -33,6 +39,7 @@ class BrowserAgentStealth:
         timestamp = str(int(time.time()))
         self.PROFILE_PATH = f"C:/Temp/ChromeProfileMatrix_{timestamp}"
         self.COOKIES_FILE = "google_cookies_matrix.pkl"
+        self.cookie_manager = CookieManager(self.COOKIES_FILE)
         self.is_stealth_mode = True
         
         print("🎯 Matrix AI - Stealth Browser Agent başlatılıyor...")
@@ -40,11 +47,16 @@ class BrowserAgentStealth:
     def initialize_driver(self, use_stealth=True):
         """Initialize the Selenium WebDriver with advanced stealth options."""
         self.is_stealth_mode = use_stealth
-        
+
         if use_stealth:
             return self._initialize_stealth_driver()
         else:
             return self._initialize_basic_driver()
+
+    def setup_driver(self, use_stealth: bool = True) -> WebDriver | None:
+        """Compatibility wrapper that initializes and returns the WebDriver."""
+        self.initialize_driver(use_stealth=use_stealth)
+        return self.driver
     
     def _initialize_stealth_driver(self):
         """Gelişmiş stealth özellikleri ile Chrome başlat"""
@@ -63,13 +75,22 @@ class BrowserAgentStealth:
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--disable-infobars")
-        chrome_options.add_argument("--disable-extensions")
+
+        extension_path = os.getenv("CHROME_EXTENSION_PATH")
+        if extension_path:
+            if extension_path.endswith(".crx"):
+                chrome_options.add_extension(extension_path)
+            else:
+                chrome_options.add_argument(f"--load-extension={extension_path}")
+        else:
+            chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--force-device-scale-factor=1.0")
         
-        # Gerçekçi user-agent
-        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        # Rastgele bir user-agent kullanarak basit rotasyon
+        user_agent = random.choice(self.USER_AGENTS)
         chrome_options.add_argument(f"--user-agent={user_agent}")
+        self.user_agent = user_agent
         
         # Additional stealth options
         chrome_options.add_argument("--disable-plugins-discovery")
@@ -85,7 +106,7 @@ class BrowserAgentStealth:
             # WebDriver'ı başlat
             service = Service()
             self.driver = webdriver.Chrome(service=service, options=chrome_options)
-            
+
             # Selenium-stealth uygula
             if STEALTH_AVAILABLE:
                 stealth(self.driver,
@@ -111,7 +132,10 @@ class BrowserAgentStealth:
                     });
                 '''
             })
-            
+
+            # Apply additional stealth bypass techniques
+            self.enhanced_stealth_bypass()
+
             self.tab_handles = self.driver.window_handles
             self.current_tab_handle = self.driver.current_window_handle
             
@@ -144,31 +168,15 @@ class BrowserAgentStealth:
     
     def _load_cookies(self):
         """Kaydedilmiş cookie'leri yükle"""
-        if os.path.exists(self.COOKIES_FILE):
-            try:
-                self.driver.get("https://www.google.com")
-                time.sleep(2)
-                
-                cookies = pickle.load(open(self.COOKIES_FILE, "rb"))
-                for cookie in cookies:
-                    if 'google' in cookie.get('domain', ''):
-                        try:
-                            self.driver.add_cookie(cookie)
-                        except:
-                            continue
-                
-                print("✅ Google cookies yüklendi")
-                
-            except Exception as e:
-                print(f"⚠️ Cookie yükleme hatası: {str(e)}")
+        if self.driver:
+            self.cookie_manager.load_cookies(self.driver)
+            print("✅ Google cookies yüklendi")
     
     def _save_cookies(self):
         """Mevcut cookie'leri kaydet"""
-        try:
-            pickle.dump(self.driver.get_cookies(), open(self.COOKIES_FILE, "wb"))
+        if self.driver:
+            self.cookie_manager.save_cookies(self.driver)
             print("✅ Google cookies kaydedildi")
-        except Exception as e:
-            print(f"⚠️ Cookie kaydetme hatası: {str(e)}")
     
     def _human_like_interactions(self):
         """İnsan benzeri etkileşimler"""
@@ -506,6 +514,10 @@ class BrowserAgentStealth:
                 self.tab_handles = []
                 self.current_tab_handle = None
 
+    def quit(self):
+        """Compatibility wrapper for closing the browser."""
+        self.close_browser()
+
     def open_new_tab(self, url: str | None = None):
         """Open a new tab, optionally navigate to a URL."""
         if self.driver:
@@ -575,3 +587,4 @@ class BrowserAgentStealth:
                 return getParameter.call(this, parameter);
             };
         """)
+
