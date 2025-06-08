@@ -14,7 +14,10 @@ persistence and integrates with ChatGPT, VS Code, and GitHub.
 - Optional Chrome extension loading via `CHROME_EXTENSION_PATH`
 - GUI fallback between PySide6, CustomTkinter, or terminal
 - VS Code Copilot integration via `CopilotBridge` without direct API usage
+- Terminal Copilot support via the `gh copilot` CLI extension
 - Commit message generation with HuggingFace `smolagents` when `USE_SMOLAGENTS` is enabled
 - GitHub API operations rely on the `requests` library
+
+To use the terminal Copilot features, install [GitHub CLI](https://cli.github.com/) and the `gh-copilot` extension.
 
 Refer to `TODO.md` for remaining tasks.

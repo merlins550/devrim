@@ -41,6 +41,7 @@ except ImportError:
 from browser_agent_stealth import BrowserAgentStealth
 from matrix_ai_chatgpt_stealth_integration import MatrixAIChatGPTStealth
 from copilot_bridge import CopilotBridge
+from gh_copilot_cli import GHCopilotCLI
 
 class MatrixAIDesktopAssistant:
     """
@@ -469,6 +470,13 @@ class MatrixAIDesktopAssistant:
             self.logger.info("Copilot Bridge hazır")
         except Exception as e:
             self.logger.error(f"Copilot Bridge hatası: {e}")
+
+        # gh-copilot CLI
+        try:
+            self.gh_copilot_cli = GHCopilotCLI()
+            self.logger.info("gh-copilot CLI hazır")
+        except Exception as e:
+            self.logger.error(f"gh-copilot CLI hatası: {e}")
         
         # Intent Detection sistemi
         try:
@@ -773,6 +781,8 @@ Başka bir şey yapmamı ister misiniz?
         response = ""
         if hasattr(self, "copilot_bridge"):
             response = self.copilot_bridge.ask(message)
+        if not response and hasattr(self, "gh_copilot_cli"):
+            response = self.gh_copilot_cli.ask(message)
         if not response:
             response = "Yanıt alınamadı."
         self.add_chat_message("asistan", response)

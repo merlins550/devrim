@@ -36,6 +36,7 @@ Cookie tabanlı stealth browser agent sistemi geliştirmek
 - [ ] Memory leak kontrolü
 - [ ] Error handling ve logging
 - [x] HuggingFace smolagents entegrasyonu
+- [x] gh-copilot CLI entegrasyonu
 
 ### 6. Dokümantasyon
 - [ ] API dokümantasyonu
