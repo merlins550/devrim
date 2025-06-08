@@ -204,7 +204,17 @@ class SmolAgentsGitPower:
             except subprocess.CalledProcessError:
                 diff_output = ""
 
-        if SmolAgentsIntegration and os.getenv("USE_SMOLAGENTS", "false").lower() == "true" and diff_output:
+        # SmolAgents integration is controlled by the USE_SMOLAGENTS environment variable.
+        # Set USE_SMOLAGENTS=true to enable SmolAgents integration for commit message generation.
+        # By default, this integration is disabled.
+        def is_smolagents_enabled():
+            """
+            Returns True if SmolAgents integration is enabled via environment variable.
+            Set USE_SMOLAGENTS=true to enable.
+            """
+            return os.getenv("USE_SMOLAGENTS", "false").lower() == "true"
+
+        if SmolAgentsIntegration and is_smolagents_enabled() and diff_output:
             try:
                 agent = SmolAgentsIntegration()
                 context = agent.generate_commit_message(diff_output)
