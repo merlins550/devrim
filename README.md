@@ -13,6 +13,7 @@ persistence and integrates with ChatGPT, VS Code, and GitHub.
 - Random user-agent selection for each session
 - Optional Chrome extension loading via `CHROME_EXTENSION_PATH`
 - GUI fallback between PySide6, CustomTkinter, or terminal
+- VS Code Copilot integration via `CopilotBridge` without direct API usage
 - Commit message generation with HuggingFace `smolagents` when `USE_SMOLAGENTS` is enabled
 - GitHub API operations rely on the `requests` library
 

@@ -40,6 +40,7 @@ except ImportError:
 # Import our custom modules
 from browser_agent_stealth import BrowserAgentStealth
 from matrix_ai_chatgpt_stealth_integration import MatrixAIChatGPTStealth
+from copilot_bridge import CopilotBridge
 
 class MatrixAIDesktopAssistant:
     """
@@ -460,6 +461,14 @@ class MatrixAIDesktopAssistant:
             self.logger.info("SmolAgents Git Power hazır")
         except Exception as e:
             self.logger.error(f"SmolAgents Git Power hatası: {e}")
+
+        # Copilot Bridge
+        try:
+            workspace = self.config["vscode"]["workspace_path"]
+            self.copilot_bridge = CopilotBridge(workspace)
+            self.logger.info("Copilot Bridge hazır")
+        except Exception as e:
+            self.logger.error(f"Copilot Bridge hatası: {e}")
         
         # Intent Detection sistemi
         try:
@@ -761,7 +770,12 @@ Başka bir şey yapmamı ister misiniz?
     def handle_code_assistance(self, message: str):
         """Kod yardımı isteklerini işle"""
         self.add_chat_message("asistan", f"🤖 Kod yardımı: {message}")
-        # ChatGPT Codex entegrasyonu buraya gelecek
+        response = ""
+        if hasattr(self, "copilot_bridge"):
+            response = self.copilot_bridge.ask(message)
+        if not response:
+            response = "Yanıt alınamadı."
+        self.add_chat_message("asistan", response)
     
     def handle_system_control(self, message: str):
         """Sistem kontrol komutlarını işle"""
