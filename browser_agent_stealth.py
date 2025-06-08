@@ -38,7 +38,7 @@ class BrowserAgentStealth:
         import time
         timestamp = str(int(time.time()))
         self.PROFILE_PATH = f"C:/Temp/ChromeProfileMatrix_{timestamp}"
-        self.COOKIES_FILE = "google_cookies_matrix.pkl"
+        self.COOKIES_FILE = f"google_cookies_matrix_{timestamp}.pkl"
         self.cookie_manager = CookieManager(self.COOKIES_FILE)
         self.is_stealth_mode = True
         
