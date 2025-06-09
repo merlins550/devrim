@@ -12,3 +12,7 @@ This contains everything you need to run your app locally.
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+This project also integrates a lightweight Windows 95 UI layer via
+`gemini95Framework.ts` which provides shared types for managing open
+applications and DOS emulator instances.
