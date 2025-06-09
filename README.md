@@ -17,3 +17,9 @@ This project also integrates a lightweight Windows 95 UI layer via
 `gemini95Framework.ts`. The module exposes helpers like
 `createOpenAppsMap()` and `createDosInstances()` for managing open
 windows and DOS emulator instances in a type-safe way.
+
+Additional utilities:
+- `ip_rotator.py` for rotating proxy addresses
+- `captcha_solver.py` placeholder for solving captchas
+- `rate_limiter.py` to throttle automated actions
+- `dom_interaction.py` convenience wrappers for Selenium

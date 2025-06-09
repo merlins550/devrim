@@ -2,6 +2,8 @@ import helium
 import time
 import random
 import os
+import logging
+logging.basicConfig(level=logging.INFO)
 from cookie_manager import CookieManager
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -17,7 +19,7 @@ try:
     STEALTH_AVAILABLE = True
 except ImportError:
     STEALTH_AVAILABLE = False
-    print("⚠️ selenium-stealth bulunamadı. pip install selenium-stealth ile kurun.")
+    logging.warning("selenium-stealth bulunamadı. pip install selenium-stealth ile kurun.")
 
 class BrowserAgentStealth:
     """Google Stealth teknolojileri ile güçlendirilmiş Browser Agent"""
@@ -41,8 +43,10 @@ class BrowserAgentStealth:
         self.COOKIES_FILE = "google_cookies_matrix.pkl"
         self.cookie_manager = CookieManager(self.COOKIES_FILE)
         self.is_stealth_mode = True
+        self.proxy_url: str | None = None
+        self.extra_headers: dict | None = None
         
-        print("🎯 Matrix AI - Stealth Browser Agent başlatılıyor...")
+        logging.info("Matrix AI - Stealth Browser Agent baslatiliyor...")
 
     def initialize_driver(self, use_stealth=True):
         """Initialize the Selenium WebDriver with advanced stealth options."""
@@ -57,10 +61,18 @@ class BrowserAgentStealth:
         """Compatibility wrapper that initializes and returns the WebDriver."""
         self.initialize_driver(use_stealth=use_stealth)
         return self.driver
+
+    def set_proxy(self, proxy_url: str) -> None:
+        """Configure an HTTP proxy like http://user:pass@host:port"""
+        self.proxy_url = proxy_url
+
+    def set_extra_headers(self, headers: dict) -> None:
+        """Set extra HTTP headers for all requests."""
+        self.extra_headers = headers
     
     def _initialize_stealth_driver(self):
         """Gelişmiş stealth özellikleri ile Chrome başlat"""
-        print("🕵️ Stealth modu etkinleştiriliyor...")
+        logging.info("Stealth modu etkinlestiriliyor...")
         
         # Profil dizini oluştur
         os.makedirs(self.PROFILE_PATH, exist_ok=True)
@@ -86,6 +98,9 @@ class BrowserAgentStealth:
             chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--force-device-scale-factor=1.0")
+
+        if self.proxy_url:
+            chrome_options.add_argument(f"--proxy-server={self.proxy_url}")
         
         # Rastgele bir user-agent kullanarak basit rotasyon
         user_agent = random.choice(self.USER_AGENTS)
@@ -107,6 +122,13 @@ class BrowserAgentStealth:
             service = Service()
             self.driver = webdriver.Chrome(service=service, options=chrome_options)
 
+            if self.extra_headers:
+                try:
+                    self.driver.execute_cdp_cmd('Network.enable', {})
+                    self.driver.execute_cdp_cmd('Network.setExtraHTTPHeaders', {'headers': self.extra_headers})
+                except Exception:
+                    pass
+
             # Selenium-stealth uygula
             if STEALTH_AVAILABLE:
                 stealth(self.driver,
@@ -117,7 +139,7 @@ class BrowserAgentStealth:
                        renderer="Intel Iris OpenGL Engine",
                        fix_hairline=True,
                 )
-                print("✅ Selenium-stealth etkinleştirildi")
+                logging.info("Selenium-stealth etkinlestirildi")
             
             # Ek JavaScript maskeleme
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -142,41 +164,49 @@ class BrowserAgentStealth:
             # Cookie'leri yükle
             self._load_cookies()
             
-            print("✅ Stealth Chrome başlatıldı")
+            logging.info("Stealth Chrome baslatildi")
             return True
             
         except Exception as e:
-            print(f"❌ Stealth Chrome başlatma hatası: {str(e)}")
+            logging.error(f"Stealth Chrome baslatma hatasi: {e}")
             return False
     
     def _initialize_basic_driver(self):
         """Temel Chrome başlatma (eski yöntem)"""
-        print("🌐 Temel Chrome modu...")
+        logging.info("Temel Chrome modu...")
         
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--force-device-scale-factor=1")
         chrome_options.add_argument("--window-size=1000,1350")
         chrome_options.add_argument("--disable-pdf-viewer")
         chrome_options.add_argument("--window-position=0,0")
+        if self.proxy_url:
+            chrome_options.add_argument(f"--proxy-server={self.proxy_url}")
         
         self.driver = helium.start_chrome(headless=False, options=chrome_options)
+        if self.extra_headers:
+            try:
+                self.driver.execute_cdp_cmd('Network.enable', {})
+                self.driver.execute_cdp_cmd('Network.setExtraHTTPHeaders', {'headers': self.extra_headers})
+            except Exception:
+                pass
         self.tab_handles = self.driver.window_handles
         self.current_tab_handle = self.driver.current_window_handle
         
-        print("✅ Temel Chrome başlatıldı")
+        logging.info("Temel Chrome baslatildi")
         return True
     
     def _load_cookies(self):
         """Kaydedilmiş cookie'leri yükle"""
         if self.driver:
             self.cookie_manager.load_cookies(self.driver)
-            print("✅ Google cookies yüklendi")
+            logging.info("Google cookies yuklendi")
     
     def _save_cookies(self):
         """Mevcut cookie'leri kaydet"""
         if self.driver:
             self.cookie_manager.save_cookies(self.driver)
-            print("✅ Google cookies kaydedildi")
+            logging.info("Google cookies kaydedildi")
     
     def _human_like_interactions(self):
         """İnsan benzeri etkileşimler"""
@@ -202,7 +232,7 @@ class BrowserAgentStealth:
                 self.driver.execute_script("window.scrollBy(0, -50);")
             
         except Exception as e:
-            print(f"⚠️ İnsan etkileşimi hatası: {str(e)}")
+            logging.warning(f"Insan etkilesimi hatasi: {e}")
 
     def go_to(self, url: str):
         """Navigate to a specific URL with stealth features."""
@@ -222,38 +252,33 @@ class BrowserAgentStealth:
     def type_text(self, text: str, selector: str):
         """Type text into an element with human-like typing."""
         if self.driver:
+            from dom_interaction import type_text as _type
             try:
-                element = self.driver.find_element(By.CSS_SELECTOR, selector)
-                
                 if self.is_stealth_mode:
-                    # İnsan benzeri yazma
-                    element.clear()
                     for char in text:
-                        element.send_keys(char)
+                        _type(self.driver, selector, char)
                         time.sleep(random.uniform(0.05, 0.15))
                 else:
-                    element.send_keys(text)
+                    _type(self.driver, selector, text)
                 
                 sleep(1)
             except Exception as e:
-                print(f"Error typing text: {e}")
+                logging.error(f"Error typing text: {e}")
 
     def click_element(self, selector: str):
         """Click on an element with human-like behavior."""
         if self.driver:
+            from dom_interaction import click as _click
             try:
-                element = self.driver.find_element(By.CSS_SELECTOR, selector)
-                
                 if self.is_stealth_mode:
-                    # İnsan benzeri tıklama
-                    actions = ActionChains(self.driver)
-                    actions.move_to_element(element).pause(random.uniform(0.1, 0.3)).click().perform()
+                    _click(self.driver, selector)
+                    time.sleep(random.uniform(0.1, 0.3))
                 else:
-                    element.click()
+                    _click(self.driver, selector)
                 
                 sleep(2)
             except Exception as e:
-                print(f"Error clicking element: {e}")
+                logging.error(f"Error clicking element: {e}")
 
     def get_page_text(self) -> str:
         """Get all visible text from the current page."""
@@ -265,7 +290,7 @@ class BrowserAgentStealth:
         """Interact with Jules using stealth technologies."""
         jules_url = "https://jules.google.com/task/15310490098518802366"
         
-        print(f"🎯 Jules ile stealth iletişim kuruluyor...")
+        logging.info("Jules ile stealth iletisim kuruluyor...")
         
         # Jules sekmesine git veya yeni sekmede aç
         jules_tab_index = -1
@@ -284,18 +309,18 @@ class BrowserAgentStealth:
             
             # Google login kontrolü ve stealth yönetimi
             if "accounts.google.com" in self.driver.current_url or "signin" in self.driver.current_url:
-                print("🔐 Google stealth oturum açma...")
+                logging.info("Google stealth oturum acma...")
                 
                 if self.is_stealth_mode:
-                    print("🕵️ Stealth modu: Manuel giriş bekleniyor...")
+                    logging.info("Stealth modu: Manuel giris bekleniyor...")
                     self._wait_for_google_login()
                 else:
-                    print("ℹ️ Lütfen tarayıcıda Google hesabınıza giriş yapın")
+                    logging.info("Lutfen tarayicida Google hesabina giris yapin")
                     while "accounts.google.com" in self.driver.current_url or "signin" in self.driver.current_url:
                         sleep(2)
-                        print("⏳ Google oturum açma bekleniyor...")
+                        logging.info("Google oturum acma bekleniyor...")
                 
-                print("✅ Google oturum açma tamamlandı")
+                logging.info("Google oturum acma tamamlandi")
                 self._save_cookies()  # Cookies'leri kaydet
                 sleep(3)
 
@@ -329,7 +354,7 @@ class BrowserAgentStealth:
                             element.send_keys(prompt)
                         
                         input_found = True
-                        print(f"✅ Jules'a stealth mesaj yazıldı: {selector}")
+                        logging.info(f"Jules'a stealth mesaj yazildi: {selector}")
                         break
                 if input_found:
                     break
@@ -337,7 +362,7 @@ class BrowserAgentStealth:
                 continue
                 
         if not input_found:
-            print("❌ Jules input alanı bulunamadı")
+            logging.error("Jules input alani bulunamadi")
             return "Hata: Input alanı bulunamadı"
 
         # İnsan benzeri gecikme
@@ -371,7 +396,7 @@ class BrowserAgentStealth:
                             button.click()
                         
                         button_found = True
-                        print(f"✅ Send butonu stealth tıklandı: {selector}")
+                        logging.info(f"Send butonu stealth tiklandi: {selector}")
                         break
                 if button_found:
                     break
@@ -383,12 +408,12 @@ class BrowserAgentStealth:
             try:
                 active_element = self.driver.switch_to.active_element
                 active_element.send_keys(Keys.RETURN)
-                print("✅ Enter tuşu ile gönderildi")
+                logging.info("Enter tusu ile gonderildi")
             except:
-                print("⚠️ Send butonu bulunamadı ve Enter çalışmadı")
+                logging.warning("Send butonu bulunamadi ve Enter calismadi")
 
         # Jules yanıtının gelmesini bekle
-        print("⏳ Jules stealth yanıtı bekleniyor...")
+        logging.info("Jules stealth yaniti bekleniyor...")
         wait_time = random.uniform(8.0, 12.0) if self.is_stealth_mode else 10.0
         sleep(wait_time)
 
@@ -415,7 +440,7 @@ class BrowserAgentStealth:
                         text = msg.text.strip()
                         if text and len(text) > 10 and prompt not in text:
                             response_text = text
-                            print(f"✅ Jules stealth yanıtı alındı: {selector}")
+                            logging.info(f"Jules stealth yaniti alindi: {selector}")
                             break
                 if response_text:
                     break
@@ -458,7 +483,7 @@ class BrowserAgentStealth:
             time.sleep(2)
             remaining = int(timeout - (time.time() - start_time))
             if remaining % 10 == 0:  # Her 10 saniyede bir bilgi ver
-                print(f"⏳ Google giriş bekleniyor... ({remaining}s kaldı)")
+                logging.info(f"Google giris bekleniyor... ({remaining}s kaldi)")
         
         return False
     
@@ -495,7 +520,7 @@ class BrowserAgentStealth:
             if messages:
                 response_text = messages[-1].text
         except Exception as e:
-            print(f"Error getting response text: {e}")
+            logging.error(f"Error getting response text: {e}")
 
         return response_text
 
@@ -506,7 +531,7 @@ class BrowserAgentStealth:
                 if self.is_stealth_mode:
                     self._save_cookies()
                 self.driver.quit()
-                print("🔴 Stealth browser kapatıldı")
+                logging.info("Stealth browser kapatildi")
             except:
                 pass
             finally:
