@@ -1,0 +1,46 @@
+name: Auto Fix Python Errors
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install auto-fix tools
+        run: |
+          pip install black isort autoflake flake8
+
+      - name: Run flake8 for error detection
+        run: |
+          flake8 . --count --show-source --statistics || true
+
+      - name: Run auto-fix script
+        run: |
+          python scripts/auto_fix_python.py
+
+      - name: Show git diff
+        run: git --no-pager diff
+
+      - name: Commit and push changes if needed
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          if [[ $(git status --porcelain) ]]; then
+            git add .
+            git commit -m "chore(auto-fix): fix python errors with black, autoflake, isort [ci skip]"
+            git push
+          fi
