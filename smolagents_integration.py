@@ -9,7 +9,6 @@ except Exception:  # pragma: no cover - optional dependency
     HfApiModel = None  # type: ignore
     Tool = object
 
-
 class CommitMessageTool(Tool):
     """Simple tool to summarise a git diff."""
 
@@ -19,10 +18,9 @@ class CommitMessageTool(Tool):
     output_type = "string"
 
     def forward(self, diff: str) -> str:  # type: ignore[override]
-    added = sum(1 for line in diff.splitlines() if line.startswith("+") and not line.startswith("+++"))
-    removed = sum(1 for line in diff.splitlines() if line.startswith("-") and not line.startswith("---"))
-    return f"Add {added} lines and remove {removed} lines"
-
+        added = sum(1 for line in diff.splitlines() if line.startswith("+") and not line.startswith("+++"))
+        removed = sum(1 for line in diff.splitlines() if line.startswith("-") and not line.startswith("---"))
+        return f"Add {added} lines and remove {removed} lines"
 
 class SmolAgentsIntegration:
     """Wrapper around `smolagents.CodeAgent` for commit message generation."""
