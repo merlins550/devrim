@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import '@tailwindcss/browser';
-import { createOpenAppsMap, createDosInstances, GeminiOpenAppsMap, DosInstances } from './gemini95Framework';
 
 //Gemini 95 was fully vibe-coded by @ammaar and @olacombe, while we don't endorse code quality, we thought it was a fun demonstration of what's possible with the model when a Designer and PM jam.
 //An homage to an OS that inspired so many of us!
 
-// Define the dosInstances object using the shared framework types
-const dosInstances: DosInstances = createDosInstances();
+// Define the dosInstances object to fix type errors
+const dosInstances: Record<string, { initialized: boolean }> = {};
 
 // --- DOM Element References ---
 const desktop = document.getElementById('desktop') as HTMLDivElement;
@@ -38,7 +37,7 @@ if (toggleClippyIcon) {
 // --- State Variables ---
 let activeWindow: HTMLDivElement | null = null;
 let highestZIndex: number = 20; // Start z-index for active windows
-const openApps: GeminiOpenAppsMap = createOpenAppsMap(); // Store open apps and their elements
+const openApps = new Map<string, { windowEl: HTMLDivElement; taskbarButton: HTMLDivElement }>(); // Store open apps and their elements
 let geminiInstance: any | null = null; // Store the initialized Gemini AI instance
 let paintCritiqueIntervalId: number | null = null; // Timer for paint critiques
 
