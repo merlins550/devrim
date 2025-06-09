@@ -14,5 +14,6 @@ This contains everything you need to run your app locally.
    `npm run dev`
 
 This project also integrates a lightweight Windows 95 UI layer via
-`gemini95Framework.ts` which provides shared types for managing open
-applications and DOS emulator instances.
+`gemini95Framework.ts`. The module exposes helpers like
+`createOpenAppsMap()` and `createDosInstances()` for managing open
+windows and DOS emulator instances in a type-safe way.

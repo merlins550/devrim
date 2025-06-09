@@ -14,3 +14,7 @@ export type DosInstances = Record<string, DosInstance>;
 export function createOpenAppsMap(): GeminiOpenAppsMap {
   return new Map<string, OpenAppInfo>();
 }
+
+export function createDosInstances(): DosInstances {
+  return {} as DosInstances;
+}

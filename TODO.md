@@ -11,6 +11,7 @@ Cookie tabanlı stealth browser agent sistemi geliştirmek
 - [x] Ana agent modülü yapısını planla
 - [x] Cookie yönetimi sistemi tasarla
 - [x] Gemini95 Windows 95 framework kütüphanesi entegrasyonu
+- [x] Gemini95 yardımcı fonksiyonları ekle
 
 ### 2. Cookie Stealth Sistemi
 - [x] Cookie yakalama ve saklama mekanizması
