@@ -1,0 +1,19 @@
+name: FULL AUTO MERGE
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    if: github.actor == github.repository_owner
+    steps:
+      - name: Auto-approve
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Auto-merge
+        uses: pascalgn/automerge-action@v0.16.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
