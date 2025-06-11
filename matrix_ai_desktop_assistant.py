@@ -40,6 +40,7 @@ except ImportError:
 # Import our custom modules
 from browser_agent_stealth import BrowserAgentStealth
 from matrix_ai_chatgpt_stealth_integration import MatrixAIChatGPTStealth
+from matrix_ai_intent_detector import Intent
 
 class MatrixAIDesktopAssistant:
     """
@@ -652,45 +653,30 @@ Bir proje fikrinizi anlatın veya komut verin!
     def process_user_message(self, message: str):
         """Kullanıcı mesajını analiz et ve işle"""
         intent = self.detect_intent(message)
-        
-        self.logger.info(f"Intent detected: {intent} for message: {message}")
-        
-        if intent == "project_creation":
+
+        intent_name = intent.name
+        self.logger.info(
+            f"Intent detected: {intent_name} (confidence: {intent.confidence:.2f}) for message: {message}"
+        )
+
+        if intent_name == "project_creation":
             self.handle_project_creation(message)
-        elif intent == "github_operation":
+        elif intent_name == "github_operation":
             self.handle_github_operation(message)
-        elif intent == "code_assistance":
+        elif intent_name == "code_assistance":
             self.handle_code_assistance(message)
-        elif intent == "system_control":
+        elif intent_name == "system_control":
             self.handle_system_control(message)
         else:
             self.handle_general_query(message)
     
-    def detect_intent(self, message: str) -> str:
+    def detect_intent(self, message: str) -> Intent:
         """Mesaj amacını tespit et"""
-        message_lower = message.lower()
-        
-        # Proje oluşturma
-        project_keywords = ["proje", "site", "uygulama", "yap", "oluştur", "geliştir", "web", "app"]
-        if any(keyword in message_lower for keyword in project_keywords):
-            return "project_creation"
-        
-        # GitHub işlemleri
-        github_keywords = ["commit", "push", "pull", "branch", "repo", "github", "git"]
-        if any(keyword in message_lower for keyword in github_keywords):
-            return "github_operation"
-        
-        # Kod yardımı
-        code_keywords = ["kod", "debug", "hata", "düzelt", "optimize", "test", "fonksiyon"]
-        if any(keyword in message_lower for keyword in code_keywords):
-            return "code_assistance"
-        
-        # Sistem kontrolü
-        system_keywords = ["başlat", "durdur", "aç", "kapat", "bağlan", "sistem"]
-        if any(keyword in message_lower for keyword in system_keywords):
-            return "system_control"
-        
-        return "general_query"
+        if getattr(self, "intent_detector", None):
+            return self.intent_detector.detect_intent(message)
+
+        # Fallback - intent detector yoksa genel sorgu döndür
+        return Intent(name="general_query", confidence=0.0, entities={}, context="")
     
     def handle_project_creation(self, message: str):
         """Proje oluşturma isteğini işle"""
