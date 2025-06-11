@@ -25,8 +25,25 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  test:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'codex')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run tests
+        run: pytest
+
   auto-merge:
-    needs: auto-approve
+    needs: [auto-approve, test]
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'codex')
     permissions:
@@ -34,14 +51,6 @@ jobs:
       pull-requests: write
       
     steps:
-      - name: Wait for checks
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          check-name: 'python-app'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
-          allowed-conclusions: success,neutral,skipped
           
       - name: Auto merge codex PRs  
         run: |
