@@ -19,8 +19,16 @@ class CommitMessageTool(Tool):
     output_type = "string"
 
     def forward(self, diff: str) -> str:  # type: ignore[override]
-        added = sum(1 for line in diff.splitlines() if line.startswith("+") and not line.startswith("+++"))
-        removed = sum(bool(line.startswith("-") and not line.startswith("---"))
+        added = sum(
+            1
+            for line in diff.splitlines()
+            if line.startswith("+") and not line.startswith("+++")
+        )
+        removed = sum(
+            1
+            for line in diff.splitlines()
+            if line.startswith("-") and not line.startswith("---")
+        )
         return f"Add {added} lines and remove {removed} lines"
 
 
