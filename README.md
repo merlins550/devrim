@@ -1,5 +1,11 @@
 # Run and deploy your AI Studio app
 
+## Usage Disclaimer
+
+These tools are provided solely for **authorized testing and research**. Any use
+that violates a website's terms of service or applicable law is prohibited. See
+[LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for details.
+
 This contains everything you need to run your app locally.
 
 ## Run Locally
