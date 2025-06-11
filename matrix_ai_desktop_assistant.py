@@ -624,17 +624,38 @@ Bir proje fikrinizi anlatın veya komut verin!
     
     def find_vscode_path(self):
         """VS Code yolunu bul"""
-        possible_paths = [
-            "C:\\Program Files\\Microsoft VS Code\\Code.exe",
-            "C:\\Program Files (x86)\\Microsoft VS Code\\Code.exe",
-            "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
-        ]
-        
+        # Ortam değişkeni ile özel yol tanımlandıysa onu kullan
+        env_path = os.getenv("VSCODE_PATH")
+        if env_path and os.path.exists(env_path):
+            return env_path
+
+        possible_paths = []
+
+        if os.name == "nt":
+            possible_paths.extend([
+                "C:\\Program Files\\Microsoft VS Code\\Code.exe",
+                "C:\\Program Files (x86)\\Microsoft VS Code\\Code.exe",
+                "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+            ])
+        elif sys.platform == "darwin":
+            possible_paths.extend([
+                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code",
+                "/usr/local/bin/code",
+            ])
+        else:
+            # Linux veya diğer POSIX sistemleri
+            possible_paths.extend([
+                "/usr/bin/code",
+                "/usr/local/bin/code",
+                "/snap/bin/code",
+                "/usr/share/code/bin/code",
+            ])
+
         for path in possible_paths:
             expanded_path = os.path.expandvars(path)
             if os.path.exists(expanded_path):
                 return expanded_path
-        
+
         return None
     
     def send_message(self):

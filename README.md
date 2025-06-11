@@ -15,5 +15,6 @@ persistence and integrates with ChatGPT, VS Code, and GitHub.
 - GUI fallback between PySide6, CustomTkinter, or terminal
 - Commit message generation with HuggingFace `smolagents` when `USE_SMOLAGENTS` is enabled
 - GitHub API operations rely on the `requests` library
+- Set `VSCODE_PATH` if VS Code is installed in a custom location
 
 Refer to `TODO.md` for remaining tasks.
