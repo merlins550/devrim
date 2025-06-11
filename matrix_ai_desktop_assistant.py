@@ -633,10 +633,23 @@ Bir proje fikrinizi anlatın veya komut verin!
     
     def find_vscode_path(self):
         """VS Code yolunu bul"""
+        # Kullanıcı özel bir kurulum dizini belirttiyse onu kullan
+        env_path = os.getenv("VSCODE_PATH")
+        if env_path and os.path.exists(env_path):
+            return env_path
+
         possible_paths = [
+            # Windows
             "C:\\Program Files\\Microsoft VS Code\\Code.exe",
             "C:\\Program Files (x86)\\Microsoft VS Code\\Code.exe",
-            "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+            "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+            # Linux
+            "/usr/bin/code",
+            "/usr/local/bin/code",
+            "/snap/bin/code",
+            # macOS
+            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code",
+            "/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin/code"
         ]
         
         for path in possible_paths:
