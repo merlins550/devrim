@@ -2,6 +2,8 @@ import helium
 import time
 import random
 import os
+import tempfile
+from pathlib import Path
 from cookie_manager import CookieManager
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -37,7 +39,7 @@ class BrowserAgentStealth:
         # Unique profile path with timestamp to avoid conflicts
         import time
         timestamp = str(int(time.time()))
-        self.PROFILE_PATH = f"C:/Temp/ChromeProfileMatrix_{timestamp}"
+        self.PROFILE_PATH = Path(tempfile.gettempdir()) / f"ChromeProfileMatrix_{timestamp}"
         self.COOKIES_FILE = "google_cookies_matrix.pkl"
         self.cookie_manager = CookieManager(self.COOKIES_FILE)
         self.is_stealth_mode = True
