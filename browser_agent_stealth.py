@@ -37,6 +37,10 @@ class BrowserAgentStealth:
         
         print("🎯 Matrix AI - Stealth Browser Agent başlatılıyor...")
 
+    def setup_driver(self, use_stealth: bool = True):
+        """Backward-compatible wrapper for :meth:`initialize_driver`."""
+        return self.initialize_driver(use_stealth)
+
     def initialize_driver(self, use_stealth=True):
         """Initialize the Selenium WebDriver with advanced stealth options."""
         self.is_stealth_mode = use_stealth
