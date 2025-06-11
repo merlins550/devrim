@@ -39,6 +39,12 @@ class BrowserAgentStealth:
 
     def setup_driver(self, use_stealth: bool = True):
         """Backward-compatible wrapper for :meth:`initialize_driver`."""
+        warnings.warn(
+            "The `setup_driver` method is deprecated and will be removed in a future release. "
+            "Please use `initialize_driver` instead.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         return self.initialize_driver(use_stealth)
 
     def initialize_driver(self, use_stealth=True):
