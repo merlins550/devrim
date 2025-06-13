@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  python-app:
 
     runs-on: ubuntu-latest
 
