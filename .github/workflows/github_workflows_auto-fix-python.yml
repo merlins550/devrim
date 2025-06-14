@@ -1,3 +1,13 @@
+            - isim: İlk etkileşim
+  kullanımlar: actions/first-interaction@v1.3.0
+  ile:
+    # Depo için belirteç. {{ secrets.GITHUB_TOKEN }} kullanılarak geçirilebilir
+    repo-belirteç:
+    # Bir bireyin ilk sorununa yorum yazın
+    sorun-iletisi: # isteğe bağlı
+    # Bir bireyin ilk çekme isteğine yorum yazın
+    pr-message: # isteğe bağlı
+          
 name: Auto Fix Python Errors
 
 on:
@@ -44,3 +54,32 @@ jobs:
             git commit -m "chore(auto-fix): fix python errors with black, autoflake, isort [ci skip]"
             git push
           fi
+                      - isim: Bir Yapı Eseri Yükle
+  kullanımlar: actions/upload-artifact@v4.6.2
+  ile:
+    # Eser adı
+    isim: # isteğe bağlı, varsayılanı eserdir
+    # Ne yükleneceğini açıklayan bir dosya, dizin veya joker karakter deseni
+    yol:
+    # Sağlanan yol kullanılarak hiçbir dosya bulunamazsa istenen davranış.
+Mevcut Seçenekler:
+  uyar: Bir uyarı çıkışı ver ancak eylemi başarısız kılma
+  hata: Eylemi bir hata mesajıyla başarısız kıl
+  görmezden gel: Herhangi bir uyarı veya hata çıkışı verme, eylem başarısız olmaz
+
+    if-no-files-found: # isteğe bağlı, varsayılan uyarıdır
+    # Eserin gün cinsinden sona ereceği süre. 0, varsayılan saklamanın kullanıldığı anlamına gelir.
+Minimum 1 gün. Depo ayarları sayfasından değiştirilmediği sürece maksimum 90 gün.
+
+    saklama günleri: # isteğe bağlı
+    # Zlib'in eser arşivine uygulanacak sıkıştırma düzeyi. Değer 0 ile 9 arasında değişebilir: - 0: Sıkıştırma yok - 1: En iyi hız - 6: Varsayılan sıkıştırma (GNU Gzip ile aynı) - 9: En iyi sıkıştırma Daha yüksek düzeyler daha iyi sıkıştırmayla sonuçlanacaktır ancak tamamlanması daha uzun sürecektir. Kolayca sıkıştırılamayan büyük dosyalar için, önemli ölçüde daha hızlı yüklemeler için 0 değeri önerilir.
+
+    sıkıştırma seviyesi: # isteğe bağlı, varsayılan 6'dır
+    # Doğruysa, eşleşen bir ada sahip bir eser, yenisi yüklenmeden önce silinir. Yanlışsa, verilen ad için bir eser zaten varsa eylem başarısız olur. Eser yoksa başarısız olmaz.
+
+    üzerine yaz: # isteğe bağlı, varsayılan değer false
+    # True ise, gizli dosyalar esere dahil edilecektir. False ise, gizli dosyalar eserden hariç tutulacaktır.
+
+    include-hidden-files: # isteğe bağlı, varsayılanı false
+          
+          
