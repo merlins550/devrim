@@ -2,6 +2,13 @@
 
 Jules'tan **tamamen bağımsız**, genel amaçlı Chrome bot bypass sistemi. VS Code asistanları ve diğer otomasyon araçları için tasarlanmış profesyonel çözüm.
 
+## Legal Disclaimer
+
+Bu sistem, web otomasyonuyla ilgili meşru testler ve araştırmalar için
+tasarlanmıştır. Araçları herhangi bir sitenin kullanım şartlarını ihlal
+edecek şekilde kullanmak kesinlikle yasaktır. Ayrıntılı uyarılar için
+[LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) dosyasına bakın.
+
 ## 🎯 Ana Özellikler
 
 ### ✅ Bot Tespiti Bypass
