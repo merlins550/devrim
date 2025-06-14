@@ -1,51 +1,24 @@
-name: Auto Merge Codex PRs
-
-on:
-  pull_request:
-    types: [opened, labeled, synchronize]
-  pull_request_review:
-    types: [submitted]
-
-jobs:
-  auto-approve:
-    runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'codex')
-    permissions:
-      contents: write
-      pull-requests: write
-      checks: read
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Auto approve codex PRs
-        run: |
-          gh pr review ${{ github.event.pull_request.number }} --approve --body "🚀 Red hack team auto-approval: Codex PR detected, merging automatically!"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  auto-merge:
-    needs: auto-approve
-    runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'codex')
-    permissions:
-      contents: write
-      pull-requests: write
-      
-    steps:
-      - name: Wait for checks
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          check-name: 'python-app'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
-          allowed-conclusions: success,neutral,skipped
+            - name: Node.js ortamını kurun
+  kullanımlar: actions/setup-node@v3.9.1
+  ile:
+    # Npmrc'de always-auth'ı ayarlayın.
+    always-auth: # isteğe bağlı, varsayılan değer false
+    # Sürüm Kullanılacak sürümün belirtimi. Örnekler: 12.x, 10.15.1, >=10.15.0.
+    düğüm sürümü: # isteğe bağlı
+    # Kullanılacak sürümün Spec'ini içeren dosya. Örnekler: .nvmrc, .node-version, .tool-versions.
+    node-version-file: # isteğe bağlı
+    # Node'un kullanacağı hedef mimari. Örnekler: x86, x64. Varsayılan olarak sistem mimarisini kullanacaktır.
+    mimari: # isteğe bağlı
+    # Eylemin sürüm özelliğini karşılayan en son kullanılabilir sürümü denetlemesini istiyorsanız bu seçeneği ayarlayın.
+    son durumu kontrol et: # isteğe bağlı
+    # Auth için kurulacak isteğe bağlı kayıt defteri. Kayıt defterini proje düzeyinde .npmrc ve .yarnrc dosyasına ayarlayacak ve auth'ı env.NODE_AUTH_TOKEN'dan okuyacak şekilde ayarlayacaktır.
+    kayıt-url'si: # isteğe bağlı
+    # Kapsamlı kayıt defterlerine karşı kimlik doğrulama için isteğe bağlı kapsam. GitHub Paketleri kayıt defterini (https://npm.pkg.github.com/) kullanırken depo sahibine geri dönülecektir.
+    kapsam: # isteğe bağlı
+    # Node-versions'dan node dağıtımlarını çekmek için kullanılır. Varsayılan bir değer olduğundan, bu genellikle kullanıcı tarafından sağlanmaz. Bu eylemi github.com'da çalıştırırken, varsayılan değer yeterlidir. GHES'te çalıştırırken, hız sınırlaması yaşıyorsanız github.com için kişisel bir erişim belirteci geçirebilirsiniz.
+    token: # isteğe bağlı, varsayılan ${{ github.server_url == 'https://github.com' && github.token || '' }}
+    # Varsayılan dizinde önbelleğe alma için bir paket yöneticisi belirtmek için kullanılır. Desteklenen değerler: npm, yarn, pnpm.
+    önbellek: # isteğe bağlı
+    # Bir bağımlılık dosyasının yolunu belirtmek için kullanılır: package-lock.json, yarn.lock, vb. Birden fazla bağımlılığı önbelleğe almak için joker karakterleri veya dosya adları listesini destekler.
+    önbellek-bağımlılık-yolu: # isteğe bağlı
           
-      - name: Auto merge codex PRs  
-        run: |
-          gh pr merge ${{ github.event.pull_request.number }} --squash --auto --delete-branch
-          echo "🎯 Red hack team: Codex PR #${{ github.event.pull_request.number }} merged automatically!"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
