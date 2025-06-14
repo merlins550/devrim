@@ -248,3 +248,5 @@ Sizin 2 gün boyunca uğraştığınız Google güvenlik duvarı bypass sistemin
 ---
 
 *Hiçbir mevcut sistemin zarar görmemesi sağlanmış, sadece gelişmiş özellikler eklenmiştir.*
+
+See [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for usage restrictions.

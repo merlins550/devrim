@@ -339,3 +339,5 @@ Sorun yaşadığınızda:
 ---
 
 *Not: Bu sistem eğitim ve geliştirme amaçlıdır. Lütfen site kullanım şartlarına uygun kullanın.*
+
+See [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for usage restrictions.
