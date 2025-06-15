@@ -7,7 +7,7 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 )
 
-from cookie_manager import CookieManager  # noqa: E402
+from matrix_ai.cookie_manager import CookieManager  # noqa: E402
 
 
 class DummyDriver:
