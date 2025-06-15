@@ -318,3 +318,4 @@ if system.extension_controller:
 **Mode**: Full Automation with AI Partnership  
 
 **🚀 Ready for Ultimate Collaboration! 🤖**
+See [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for usage restrictions.
