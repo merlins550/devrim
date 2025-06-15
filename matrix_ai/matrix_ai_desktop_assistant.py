@@ -38,9 +38,9 @@ except ImportError:
         GUI_FRAMEWORK = "Terminal"
 
 # Import our custom modules
-from browser_agent_stealth import BrowserAgentStealth
-from matrix_ai_chatgpt_stealth_integration import MatrixAIChatGPTStealth
-from copilot_bridge import CopilotBridge
+from .browser_agent_stealth import BrowserAgentStealth
+from .matrix_ai_chatgpt_stealth_integration import MatrixAIChatGPTStealth
+from .copilot_bridge import CopilotBridge
 
 class MatrixAIDesktopAssistant:
     """
@@ -456,7 +456,7 @@ class MatrixAIDesktopAssistant:
         
         # SmolAgents Git Power entegrasyonu
         try:
-            from smolagents_git_power import SmolAgentsGitPower
+            from .smolagents_git_power import SmolAgentsGitPower
             self.smolagents_git = SmolAgentsGitPower()
             self.logger.info("SmolAgents Git Power hazır")
         except Exception as e:
@@ -472,7 +472,7 @@ class MatrixAIDesktopAssistant:
         
         # Intent Detection sistemi
         try:
-            from matrix_ai_intent_detector import MatrixAIIntentDetector
+            from .matrix_ai_intent_detector import MatrixAIIntentDetector
             self.intent_detector = MatrixAIIntentDetector()
             self.logger.info("Intent Detection sistemi hazır")
         except Exception as e:

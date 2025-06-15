@@ -8,7 +8,7 @@ from tkinter import ttk, messagebox, scrolledtext
 import threading
 import json
 from pathlib import Path
-from universal_chrome_bypass import UniversalChromeBypass
+from .universal_chrome_bypass import UniversalChromeBypass
 
 class UniversalBypassLauncher:
     def __init__(self):

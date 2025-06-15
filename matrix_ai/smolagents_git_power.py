@@ -22,7 +22,7 @@ from typing import Dict, List, Optional, Any
 import logging
 
 try:
-    from smolagents_integration import SmolAgentsIntegration
+    from .smolagents_integration import SmolAgentsIntegration
 except Exception:  # pragma: no cover - optional
     SmolAgentsIntegration = None
 
@@ -39,7 +39,7 @@ class SmolAgentsGitPower:
     """
     
     def __init__(self, github_token: Optional[str] = None):
-        self.github_token = github_token
+        self.github_token = github_token or os.getenv("GITHUB_TOKEN")
         self.logger = logging.getLogger("SmolAgentsGit")
         
         # GitHub API base URL
