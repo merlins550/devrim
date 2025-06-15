@@ -7,9 +7,9 @@ persistence and integrates with ChatGPT, VS Code, and GitHub.
 
 ## Features
 - Stealth browser agent with cookie management
-- Optional encrypted cookie storage via `COOKIE_ENCRYPTION_KEY`
-- Cookie rotation via `COOKIE_DIR`
-- Customize cookie file paths with `COOKIE_FILE_PATH` and `COOKIE_JSON_PATH`
+- Optional encrypted cookie storage via the `COOKIE_ENCRYPTION_KEY` environment variable
+- Cookie rotation via the `COOKIE_DIR` environment variable
+- Customize cookie file paths with the `COOKIE_FILE_PATH` and `COOKIE_JSON_PATH` environment variables
 - Random user-agent selection for each session
 - Optional Chrome extension loading via `CHROME_EXTENSION_PATH`
 - GUI fallback between PySide6, CustomTkinter, or terminal
