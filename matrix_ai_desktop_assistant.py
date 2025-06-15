@@ -41,6 +41,7 @@ except ImportError:
 from browser_agent_stealth import BrowserAgentStealth
 from matrix_ai_chatgpt_stealth_integration import MatrixAIChatGPTStealth
 from copilot_bridge import CopilotBridge
+from matrix_ai_intent_detector import Intent
 
 class MatrixAIDesktopAssistant:
     """
@@ -660,17 +661,20 @@ Bir proje fikrinizi anlatın veya komut verin!
     
     def process_user_message(self, message: str):
         """Kullanıcı mesajını analiz et ve işle"""
-        intent = self.detect_intent(message)
-        
-        self.logger.info(f"Intent detected: {intent} for message: {message}")
-        
-        if intent == "project_creation":
+        # Yeni nesil IntentDetector kullanımı
+        intent: Intent = self.intent_detector.detect_intent(message)
+
+        self.logger.info(
+            f"Intent detected: {intent.name} (confidence: {intent.confidence:.2f}) for message: {message}"
+        )
+
+        if intent.name == "project_creation":
             self.handle_project_creation(message)
-        elif intent == "github_operation":
+        elif intent.name == "github_operation":
             self.handle_github_operation(message)
-        elif intent == "code_assistance":
+        elif intent.name == "code_assistance":
             self.handle_code_assistance(message)
-        elif intent == "system_control":
+        elif intent.name == "system_control":
             self.handle_system_control(message)
         else:
             self.handle_general_query(message)
