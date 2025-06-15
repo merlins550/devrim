@@ -1,5 +1,11 @@
 # 🚀 Matrix AI - Ultimate Automation System
 
+## Usage Disclaimer
+
+The following automation utilities are for **authorized testing and research**
+purposes only. Any use that breaches a website's terms of service is strictly
+forbidden. See [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for further details.
+
 ## 📋 Genel Bakış
 
 Matrix AI Ultimate Automation System, Jules.google.com ile tam entegre çalışan kapsamlı bir otomasyon çözümüdür. Sistem, gelişmiş stealth teknolojileri, AI-powered yanıt motoru ve terminal entegrasyonu ile donatılmıştır.

@@ -1,5 +1,11 @@
 # 🕵️ Universal Chrome Bypass System
 
+## Usage Disclaimer
+
+This system is intended solely for **authorized testing and research**. Using it
+to violate any website's terms of service is prohibited. Consult
+[LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for the full disclaimer.
+
 Jules'tan **tamamen bağımsız**, genel amaçlı Chrome bot bypass sistemi. VS Code asistanları ve diğer otomasyon araçları için tasarlanmış profesyonel çözüm.
 
 ## 🎯 Ana Özellikler
