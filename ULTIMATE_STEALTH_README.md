@@ -4,6 +4,14 @@
 
 Google'ın en gelişmiş bot tespit sistemlerini aşan Ultimate Stealth teknolojilerini Computerrrrrrr yapısına entegre ettik!
 
+## Legal Disclaimer
+
+Bu proje, gizlilik ve bot tespit sistemleri üzerinde meşru testler ve akademik
+araştırmalar yapmak için örnek otomasyon teknikleri içerir. Bu araçları,
+herhangi bir web sitesinin hizmet şartlarını ihlal edecek şekilde
+kullanmanız **kesinlikle yasaktır**. Ayrıntılı bilgi için
+[LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) dosyasını inceleyin.
+
 ## 🛡️ Ultimate Stealth Özellikleri
 
 ### ✅ Gelişmiş Bot Maskeleme:
