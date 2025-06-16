@@ -64,10 +64,9 @@ class MatrixAIDesktopAssistant:
         self.github_agent = None
         self.smolagents_git = None        # SmolAgents Git entegrasyonu
         self.chatgpt_stealth = None        # ChatGPT Stealth entegrasyonu        # Konfigürasyon
-        self.config = self.load_config()
-        
         # Logging sistemi
         self.setup_logging()
+        self.config = self.load_config()
         
         # GUI başlatma
         self.init_gui()
