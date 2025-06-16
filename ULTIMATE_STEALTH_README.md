@@ -1,5 +1,11 @@
 # 🕵️ Matrix AI - Jules Ultimate Stealth Connector
 
+## Usage Disclaimer
+
+This project is intended only for **authorized testing and research**. Do not use
+it to violate any website's terms of service. Refer to
+[LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for more information.
+
 ## 🎉 BAŞARILI ENTEGRASYONmemur TAMAMLANDI!
 
 Google'ın en gelişmiş bot tespit sistemlerini aşan Ultimate Stealth teknolojilerini Computerrrrrrr yapısına entegre ettik!
