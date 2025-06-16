@@ -6,3 +6,4 @@ PySide6
 cryptography
 smolagents
 requests
+pytest
